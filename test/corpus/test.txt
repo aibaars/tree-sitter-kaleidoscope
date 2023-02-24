@@ -47,18 +47,18 @@ def forwithoutstep() for x = 3, x < 10 in x
       argument: (identifier))
     body: (binaryOpExpression
       lhs: (binaryOpExpression
-        lhs: (binaryOpExpression
-          lhs: (number)
-          operator: (identifier)
-          rhs: (variableExpression
-            name: (identifier)))
+        lhs: (number)
         operator: (identifier)
-        rhs: (functionCallExpression
+        rhs: (variableExpression
+          name: (identifier)))
+      operator: (identifier)
+      rhs: (binaryOpExpression
+        lhs: (functionCallExpression
           callee: (identifier)
           argument: (variableExpression
-            name: (identifier))))
-      operator: (identifier)
-      rhs: (number)))
+            name: (identifier)))
+        operator: (identifier)
+        rhs: (number))))
   statement: (functionDefinition
     prototype: (functionPrototype
       name: (identifier)

@@ -1,11 +1,15 @@
-const OPERATORS = ['=', '*', '+', '-', '/', '<', '^', '!', '%', '&', '.', ':', '>', '?',
-    '@', '\\', '_', '|', '==', '!=', '++', '--']
+const NUM_PRECEDENCE_LEVELS = 101;
 module.exports = grammar({
     name: 'kaleidoscope',
     extras: $ => [
         $.lineComment,
         $._whiteSpace,
     ],
+    externals: $ => {
+        let result = Array.from({ length: NUM_PRECEDENCE_LEVELS }, (_, index) => $['_operator_' + index]);
+        result.push($._operator_def)
+        return result;
+    },
     word: $ => $.identifier,
     supertypes: $ => [$._expression, $._primaryExpression, $._prototype, $._repl],
     rules: {
@@ -16,7 +20,7 @@ module.exports = grammar({
 
         identifier: $ => /[a-zA-Z][a-zA-Z0-9]*/,
 
-        _operator: $ => choice(...OPERATORS),
+        _operator: $ => choice(...Array.from({ length: NUM_PRECEDENCE_LEVELS }, (_, index) => $['_operator_' + index])),
 
         initializer: $ => seq(
             field('variable', $.identifier), optional(seq('=', field('expr', $._expression)))),
@@ -31,16 +35,19 @@ module.exports = grammar({
             $.variableExpression,
             $.number),
         parenExpression: $ => seq('(', field('expr', $._expression), ')'),
-        functionCallExpression: $ => prec(100, seq(field('callee', $.identifier), '(', optional(seq(field('argument', $._expression), repeat(seq(',', field('argument', $._expression))))), ')')),
+        functionCallExpression: $ => prec(1000, seq(field('callee', $.identifier), '(', optional(seq(field('argument', $._expression), repeat(seq(',', field('argument', $._expression))))), ')')),
         varInExpression: $ => seq('var', field('initializer', $.initializer), repeat(seq(',', field('initializer', $.initializer))), 'in', field('expr', $._expression)),
         conditionalExpression: $ => seq('if', field('condition', $._expression), 'then', field('then', $._expression), 'else', field('else', $._expression)),
         forExpression: $ => seq('for', field('initializer', $.initializer), ',', field('condition', $._expression), optional(seq(',', field('update', $._expression))), 'in', field('body', $._expression)),
-        unaryOpExpression: $ => prec(90, seq(field('operator', alias($._operator, $.identifier)), field('operand', $._expression))),
+        unaryOpExpression: $ => prec(900, seq(field('operator', alias($._operator, $.identifier)), field('operand', $._expression))),
         variableExpression: $ => field('name', $.identifier),
 
         _expression: $ => choice($._primaryExpression, $.binaryOpExpression),
-        // TODO: handle (user defined) precedence
-        binaryOpExpression: $ => prec.left(5, seq(field('lhs', $._expression), field('operator', alias($._operator, $.identifier)), field('rhs', $._expression))),
+        binaryOpExpression: $ => {
+            const operators = Array.from({ length: NUM_PRECEDENCE_LEVELS }, (_, index) => $['_operator_' + index]);
+            const operatorPrecedence = operators.map((operator, index) => prec.left(10 + index, seq(field('lhs', $._expression), field('operator', alias(operator, $.identifier)), field('rhs', $._expression))));
+            return choice(...operatorPrecedence);
+        },
 
         number: $ => /(0|[1-9][0-9]*)(\.[0-9]+)?/,
         _prototype: $ => choice(
@@ -49,8 +56,8 @@ module.exports = grammar({
             $.binaryPrototype),
         functionPrototype: $ => seq(field('name', $.identifier), '(', repeat(field('argument', $.identifier)), ')'),
         unaryPrototype: $ => seq('unary', field('name', alias($._operator, $.identifier)), '(', field('argument', $.identifier), ')'),
-        binaryPrototype: $ => seq('binary', field('name', alias($._operator, $.identifier)), optional(field('precedence', $.number)), '(', field('argument', $.identifier), field('argument', $.identifier), ')'),
-
+        binaryPrototype: $ => seq('binary', field('name', alias($._operator_def, $.identifier)), optional(field('precedence', alias($._prec_number, $.number))), '(', field('argument', $.identifier), field('argument', $.identifier), ')'),
+        _prec_number: $ => /[1-9][0-9]?(\.[0-9]+)?|100(\.0+)?/,
         _repl: $ => choice(
             $.functionDefinition,
             $.externalDeclaration,

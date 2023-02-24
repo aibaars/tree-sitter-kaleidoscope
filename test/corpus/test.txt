@@ -1,0 +1,186 @@
+================================================================================
+program
+================================================================================
+
+def succ(x) x + 1
+
+def foo(x y) 1 + x + succ(y) * 0
+
+def bar(x y z) if x then y else z
+
+def baz() for i = 0, i < 10, 2 in i
+
+def baz2() for i = 0, i < 10 in i
+
+42
+
+succ(foo(1, 2))
+
+def onevar() var x = 1 in x + 1
+
+def twovars() var x = 1, y = 2 in x + y
+
+def mutvars() var x = 1 in x = 2
+
+def varnoinit() var x in 42
+
+def forwithstep() for x = 3, x < 10, 2 in x
+
+def forwithoutstep() for x = 3, x < 10 in x
+
+--------------------------------------------------------------------------------
+
+(program
+  statement: (functionDefinition
+    prototype: (functionPrototype
+      name: (identifier)
+      argument: (identifier))
+    body: (binaryOpExpression
+      lhs: (variableExpression
+        name: (identifier))
+      operator: (identifier)
+      rhs: (number)))
+  statement: (functionDefinition
+    prototype: (functionPrototype
+      name: (identifier)
+      argument: (identifier)
+      argument: (identifier))
+    body: (binaryOpExpression
+      lhs: (binaryOpExpression
+        lhs: (binaryOpExpression
+          lhs: (number)
+          operator: (identifier)
+          rhs: (variableExpression
+            name: (identifier)))
+        operator: (identifier)
+        rhs: (functionCallExpression
+          callee: (identifier)
+          argument: (variableExpression
+            name: (identifier))))
+      operator: (identifier)
+      rhs: (number)))
+  statement: (functionDefinition
+    prototype: (functionPrototype
+      name: (identifier)
+      argument: (identifier)
+      argument: (identifier)
+      argument: (identifier))
+    body: (conditionalExpression
+      condition: (variableExpression
+        name: (identifier))
+      then: (variableExpression
+        name: (identifier))
+      else: (variableExpression
+        name: (identifier))))
+  statement: (functionDefinition
+    prototype: (functionPrototype
+      name: (identifier))
+    body: (forExpression
+      initializer: (initializer
+        variable: (identifier)
+        expr: (number))
+      condition: (binaryOpExpression
+        lhs: (variableExpression
+          name: (identifier))
+        operator: (identifier)
+        rhs: (number))
+      update: (number)
+      body: (variableExpression
+        name: (identifier))))
+  statement: (functionDefinition
+    prototype: (functionPrototype
+      name: (identifier))
+    body: (forExpression
+      initializer: (initializer
+        variable: (identifier)
+        expr: (number))
+      condition: (binaryOpExpression
+        lhs: (variableExpression
+          name: (identifier))
+        operator: (identifier)
+        rhs: (number))
+      body: (variableExpression
+        name: (identifier))))
+  statement: (number)
+  statement: (functionCallExpression
+    callee: (identifier)
+    argument: (functionCallExpression
+      callee: (identifier)
+      argument: (number)
+      argument: (number)))
+  statement: (functionDefinition
+    prototype: (functionPrototype
+      name: (identifier))
+    body: (varInExpression
+      initializer: (initializer
+        variable: (identifier)
+        expr: (number))
+      expr: (binaryOpExpression
+        lhs: (variableExpression
+          name: (identifier))
+        operator: (identifier)
+        rhs: (number))))
+  statement: (functionDefinition
+    prototype: (functionPrototype
+      name: (identifier))
+    body: (varInExpression
+      initializer: (initializer
+        variable: (identifier)
+        expr: (number))
+      initializer: (initializer
+        variable: (identifier)
+        expr: (number))
+      expr: (binaryOpExpression
+        lhs: (variableExpression
+          name: (identifier))
+        operator: (identifier)
+        rhs: (variableExpression
+          name: (identifier)))))
+  statement: (functionDefinition
+    prototype: (functionPrototype
+      name: (identifier))
+    body: (varInExpression
+      initializer: (initializer
+        variable: (identifier)
+        expr: (number))
+      expr: (binaryOpExpression
+        lhs: (variableExpression
+          name: (identifier))
+        operator: (identifier)
+        rhs: (number))))
+  statement: (functionDefinition
+    prototype: (functionPrototype
+      name: (identifier))
+    body: (varInExpression
+      initializer: (initializer
+        variable: (identifier))
+      expr: (number)))
+  statement: (functionDefinition
+    prototype: (functionPrototype
+      name: (identifier))
+    body: (forExpression
+      initializer: (initializer
+        variable: (identifier)
+        expr: (number))
+      condition: (binaryOpExpression
+        lhs: (variableExpression
+          name: (identifier))
+        operator: (identifier)
+        rhs: (number))
+      update: (number)
+      body: (variableExpression
+        name: (identifier))))
+  statement: (functionDefinition
+    prototype: (functionPrototype
+      name: (identifier))
+    body: (forExpression
+      initializer: (initializer
+        variable: (identifier)
+        expr: (number))
+      condition: (binaryOpExpression
+        lhs: (variableExpression
+          name: (identifier))
+        operator: (identifier)
+        rhs: (number))
+      body: (variableExpression
+        name: (identifier)))))
